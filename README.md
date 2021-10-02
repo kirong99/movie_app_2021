@@ -1,5 +1,129 @@
 # 최기룡 [201840231]
 
+## [9월 29일]
+### 오늘 배운 내용 요약(리액트)
+
+1. master branch를 main branch로 변경
+
+ - 버전 2.28이상인지 확인
+ >git --version
+ >git config --global init.defaultBranch main
+
+ - config 확인. 우선순위는 Local>Global>System순서, system은 바뀌지 않음
+
+>git config --system --list
+git config --global --list
+git config --local --list
+모든 설정 : git config --list
+
+ - 기본 브랜치 변경
+>git branch -m master main
+
+___
+
+2. React Project clone하기
+
+ - git clone 주소
+
+ - cd 프로젝트 폴더
+
+ - npm install
+
+ - npm start
+
+ ___
+
+ 3. 상대경로 이미지 삽입 방법
+
+  - public 폴더에 images폴더를 생성 -> 필요한 곳에 <img src="image/[이미지 이름]">형태로 태그 작성
+
+  ___
+
+  4. 음식 앱에 prop-types 도입하기
+
+  - 음식 데이터에 rating 추가하기
+    - foodLike 배열의 각 요소에 rating(평점) 추가
+    - 자료형은 number
+
+  - prop-types 설치하기
+    - npm install prop-types
+    - package.json 파일을 열어 dependencis키에 prop-types가 등록되어 있는지 확인
+    - **import PropTypes from 'prop-types'**를 파일 맨 위에 추가
+
+  - Food.propTypes 작성하기
+    -  rating : PropTypes.string.isRequired 라고 작성을 하면 콘솔창에 오류 발생 ->  rating : PropTypes.**number**.isRequired로 바꿔주기
+    - isRequired는 반드시 필요하다는 뜻
+
+___
+
+5. state로 숫자 증감 기능 만들어 보기
+
+- props는 정적인 데이터만 다룰 수 있음.
+- state는 동적인 데이터를 다루기 위해 사용됨.
+- state는 class형 컴포넌트에서 사용
+- 기존의 App.js -> 04-App.js로 변경 후 새로운 App.js 생성
+<br/>
+
+- 클래스형 컴포넌트 작성
+```javascript
+import React from 'react';
+
+class App extends React.Component {
+  //App 클래스는 React.Component는 상속받는다.
+  //React.Component는 500여 줄이 넘는 코드로 여러가지 기능이 구현되어 있기 때문에 사용하기 편리하다.
+  //import를 할때 '{Component}'를 써주면 extends에서 'React'을 생략할 수 있다.
+}
+
+export default App;
+```
+
+<br />
+
+- render() 함수 사용
+  - App 컴포넌트가 JSX를 반환해야 하지만 class형 컴포넌트에서는 바로 return 사용 x -> render() 함수 내에서 사용
+<br />
+
+- state 정의하기
+  - state는 반드시 class형 컴포넌트 안에서, 소문자를 사용해야 한다.
+  - class안에 state={}라고 작성하여 state를 정의한다
+  - count 값을 0으로 지정, render함수에서 this.state.count를 출력
+<br />
+
+- count state값 변경하기
+  - Add, Minus 버튼 추가
+  - div 태그로 묶기, 버튼을 누를때 마다 add와minus 출력
+  - 화살표함수 사용,onClick속성을 이용
+![코드](./onclick.PNG)
+
+___
+
+6. 숫자 증감 기능 만들기
+
+- 앞서 사용한 코드에서 console.log를 삭제하고 this.state.count로 바꿔서 결과를 보면 경고가 나타남. => setState()함수를 사용해야 해결
+>this.setState({count : 1}) 또는
+>this.setState({count : -1})
+
+- 이것또한 지속적인 증감은 아님
+>this.setState(current => {count:current.count +1}) 또는
+>this.setState(current => {count:current.count -1})
+
+<br />
+
+- 생성자(constructor)란 무엇인가
+  - constructor는 Component를 생성할 때 state 값을 초기화하거나 메서드를 바인딩할 때 사용
+  - 자바스크립트에서 super는 부모클래스 생성자의 참조한다는 의미
+  - 자바스크립트는 언어적 제약사항으로 생성자에서 super를 호출하기 전에는 this를 사용할 수 없고 **super를 먼저 호출**해야 this 사용가능
+  - 생성자 내에서는 setState를 사용하지 않고 this.state를 사용하여 state 초기값 할당
+  - 생성자 내에서는 외부 API를 호출할수 없으므로 필요하다면 componentDidMount()를 사용
+
+- componentDidMount() 함수
+  - componentDidMount()함수를 선언하고, console.log()함수를 작성하여 실행해보면 render()함수 실행 직후인 것을 확인 가능하다.
+
+- componentDidUpdate() 함수
+  - 동일한 방법으로 Update로 바꿔서 실행을 해보면 console에 바로 출력이 되지 않고 버튼을 클릭해서 화면을 업데이트하면 componentDidUpdate()함수가 같이 실행된다.
+![생성자](./생성자.PNG)
+
+
 ## [9월 15일]
 ### 오늘 배운 내용 요약(리액트)
 

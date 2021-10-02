@@ -1,46 +1,41 @@
-import React from 'react';
+import React from "react";
 
-function Food({name, picture}) {
-    return (
-        <div>
-            <h2>I Like {name} </h2>
-            <img src = {picture} />
-        </div>
-    );
+class App extends React.Component{
+    constructor(props) {
+        super(props) 
+            console.log('hello');
+    }
+
+    componentDidMount() {
+        console.log('component rendered');
+    }
+
+    componentDidUpdate() {
+        console.log('component update');
+    }
+
+    state = {
+        count:0
+    };
+
+    add= () => {
+        this.setState(current => ({count:current.count +1}))
+    };
+
+    minus= () => {
+        this.setState(current => ({count:current.count -1}))
+    };
+
+    render() {
+        console.log('render');
+        return (
+            <div>
+                <h1>The number is:{this.state.count}</h1>
+                <button onClick={this.add}>Add</button>
+                <button onClick={this.minus}>Minus</button>
+            </div>
+        );
+    }
 }
 
-const foodILike = [
-    {
-        id: 1,
-        name : 'Kimchi',
-        image : 'http://aeriskitchen.com/wp-content/uploads/2008/09/kimchi_bokkeumbap_02-.jpg',
-    },
-    {
-        id: 2,
-        name : 'Samgyepsal',
-        image : '',
-    },
-    {
-        id: 3,
-        name: 'Bibimbap',
-        image : '',
-    },
-    {
-        name : 'Donkasu',
-        image : '',
-    },
-    {
-        name : 'Kimbap',
-        image : '',
-    },
-];
-
-function App() {
-    return (
-        <div>
-            {foodILike.map(dish => (<Food key={dish.id} name={dish.name} picture={dish.image} />))}
-        </div>
-    );
-}
-
-export default App;
+export default App
