@@ -1,5 +1,67 @@
 # 최기룡 [201840231]
 
+## [10월 6일]
+### 오늘 배운 내용 요약(리액트)
+
+1. 로딩상태 출력
+
+ - App.js를 새로 만들어 준다.
+
+ - state를 선언하고, isLoading키 생성 후에 키 값을 true로 설정 -> 아직 데이터가 없기 때문에 true로 세팅
+
+ - 삼항연산자를 사용해서 isLoading이 true면 Loading을 출력하고 false라면 영화데이터출력을 출력한다
+
+___
+ 2. 로딩현상 구현
+
+ - setTimeout() 함수의 첫 번째 인자는 실행할 함수이고, 두 번째 인자로 전달한 값은 지연시간이다. -> 두 번째 인자 시간만큼 지난 후 첫 번째 인자의 함수 실행
+
+ - 시간의 단위는 msec
+
+ - componentDidMount()함수를 사용하여 render()함수가 먼저 수행되게 하고 그 이후 setTimeout()함수가 실행되도록 한다.
+ ![로딩](./로딩.PNG)
+
+___
+
+ 3. 영화 API 사용해보기
+
+ - axios 설치하기 -> 설치 후 package.json에서 확인 가능
+ >npm install axios
+
+ - yts.lt/api 사이트에서 영화 데이터 살펴보기
+
+ - 구글 웹 스토어 -> JSON Viewer 설치
+
+ - 노마드 코더 영화 API를 사용 -> YTS의 endpoint/list_movies.json을 쓰려면 yts-proxy.now.sh에 /list_movies.json를 붙이면 된다.
+
+ - 노마드 코더 영화 API를 영화 앱에서 호출하기
+  - axios import 추가
+  - setTimeout() 함수를 지우고 axios로 API호출
+
+ - axios 동작 확인
+  - 코드 작성 후 영화 앱을 새로고침 하고 network 탭을 들어간다면 list_movies_json이라고 나와있다. -> axios가 동작한다는 뜻
+
+ - getMovies() 함수 기다린 다음, axios.get() 함수가 반환 데이터 잡기
+  - getMovies() 함수를 만들고 그 함수 안에서 axios.get이 실행되도록 코드 작성
+
+ - getMovies()에 async 붙이고, axios.get()에 await 붙이기
+  - getMovies()는 시간이 필요하다고 자바스크립트에 전달하려면 async를 앞에 붙이고 axios.get() 앞에 await을 붙이면 된다.
+
+ - async라는 키워드는 자바스크립트에게 getMovies() 함수가 비동기라고 알려주는 역할
+
+ - await은 getMovies()함수 내부의 axios.get()의 실행 완료를 기다렸다가 끝나면 계속진행하라고 알려주는 역할
+ ![async](./async.PNG)
+___
+
+4. 영화 데이터 화면에 그리기
+
+- console.log() 함수로 영화 데이터 출력하기
+  - axios.get()으로 잡은 영화 데이터가 movies 변수 안에 들어있는것을 출력
+  - console탭에 데이터들이 출력된다.
+
+- 객체에 있는 moives 키에 접근하기
+  - console.log() 함수에 있는 movies 옆에 data.data.movies 코드 작성-> 원하는 데이터를 추출하기 위함
+
 ## [9월 29일]
 ### 오늘 배운 내용 요약(리액트)
 
