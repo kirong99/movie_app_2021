@@ -1,5 +1,158 @@
 # 최기룡 [201840231]
 
+## [10월 13일]
+### 오늘 배운 내용 요약(리액트)
+
+1. 영화 데이터 화면에 그리기
+  - 객체에 있는 movies 키에 접근하기
+    - ES6를 사용하여 구조 분해 할당 방법 사용
+  - moive state에 영화 데이터 저장
+    - this.setState({movies:movies})와 같이 작성하여 state에 영화 데이터 저장 -> console 부분 삭제
+    - ES6에서는 객체의 키와 대입할 변수의 이름이 같다면 코드를 축약할 수 있다. -> this.setState({movies:movies}) -> this.setState({movies})로 수정
+  - isLoading state를 true에서 false로 업데이트하기
+    - isLoading state의 값을 true에서 false로 업데이트
+  ___
+
+2. Movie 컴포넌트 만들기
+    - src 폴더에 새로 Movie.js 파일 만들기 -> 컴포넌트 생성(prop-types 사용)
+  ```javascript
+    import PropTypes from 'prop-types';
+    function Movie() {
+      return <h1></h1>;
+    }
+
+    Movie.propTypes = {};
+
+    export default Movie;
+  ```
+  ___
+
+  - Movie.propTypes 작성하기
+    - id 값 추가(자료형 : number, isRequired)
+    - 자료형이 string으로 year,title,summary,poster를 각각 추가
+    - 아래 코드 내용 추가
+
+  ``` javascript
+    id : PropTypes.number.isRequired,
+    year : PropTypes.string.isRequired,
+    title : PropTypes.string.isRequired,
+    summary : PropTypes.string.isRequired,
+    poster : PropTypes.string.isRequired
+  ```
+  ___
+  - axios 수정 : 주소뒤에 sort_by=rating을 추가해서 평점을 내림차순으로 보여주게 변경
+  ``` javascript
+  await axios.get('http://yts-proxy.now.sh/list_movies.json?sort_by=rating');
+  ```
+  ___
+- Movie 컴포넌트에 props 추가하고 출력해보기
+  - 컴포넌트에 위에서 추가한 id,year,title,summary,poster를 받아 출력하게 할 수 있도록 수정
+  - 먼저 title만 출력하도록 수정
+```javascript
+function Movie({id,title,summary,year,poster}){
+  return <h4>{title}</h4>
+}
+```
+___
+- App 컴포넌트에서 Movie 컴포넌트 그리기
+  - App 컴포넌트에서 영화데이터출력부분을 출력하고 있는 자리에 movies.map()을 사용하여 Movie 컴포넌트를 반환하도록 수정
+``` javascript
+import Movie from './Movie';
+// ··· 중간 생략
+const {isLoading, movies } = this.state;
+return <div>{isLoading? 'Loading...' : movies.map((movie) => {
+  console.log(movie);
+  return;
+})}</div>
+```
+___
+- Movie 컴포넌트에 props 전달하기
+  -앞서 Movie 컴포넌트에 id,year,title,summary,poster를 isRequired로 설정했기에 모두 무조건 props에 전달해야함
+  - 대부분 props의 이름은 노마드 코더 영화 API와 같게 만들었기에 poster props의 키 이름은 movies.medium_cover_image로 작성해야함
+```javascript
+return (
+  <Movie
+  id={movie.id}
+  year={movie.year}
+  title={movie.title}
+  summary={movie.summary}
+  poster={movie.medium_cover_image}/>
+)
+```
+- 평점순으로 나열 되어있는지 확인
+___
+- keyprops 추가하기
+  - console.log는 더이상 사용하지 않으니 삭제
+```javascript
+<Movie
+key={movie.id}
+id={movie.id}
+year={movie.year}
+title={movie.title}
+summary={movie.summary}
+poster={movie.medium_cover_image}/>
+```
+___
+3. 영화 앱 스타일링 하기 - 기초
+  - div 태그와 section 태그를 이용해서 감싸기
+  - 아래 코드로 수정
+```javascript
+return <section class="container">
+{isLoading ? (
+  <div class="loader">
+  <span class="loader-text">Loading...</span>
+  </div>
+) : (
+  <div class="movies">
+  {movies.map(movie=> (
+    // ··· 중간 생략
+  ))}
+  </div>
+)}
+</section>
+```
+___
+- Movie 컴포넌트에서 html 추가하기
+```javascript
+//Movie.js
+function Moive({ id, title,year,summary,poster}){
+  retuen (
+    <div class="movie-data">
+      <h3 class="movie-title">{title}</h3>
+      <h5 class="movie-year">{year}</h5>
+      <p class="movie-summary">{summary}</p>
+    </div>
+  );
+}
+```
+___
+- 영화 포스터 이미지 추가하기
+  - img 엘리먼트의 src 속성에는 poster props를, alt, title 속성에는 title props를 전달하여 추가
+```javascript
+//Movie.js
+return (
+  <div class="movie">
+  <img src="poster" alt={title} title={title}>
+  </div>
+)
+```
+- 코드 완성 후 id가 필요하지 않은 걸 알게 되었으니 id props 삭제
+___
+- css 파일을 생성하여 꾸미기
+  - App.js 파일과 Movie.js 파일에 css 파일을 생성 후 임포트하여 style 적용
+```javascript
+//App.js
+import'./App.css';
+//Movie.js
+import'./Movie.css';
+```
+```css
+//App.css
+body{ background-color : #2f2f2f; }
+```
+**10월 13일자 최종화면**
+![css](./css.PNG)
+
 ## [10월 6일]
 ### 오늘 배운 내용 요약(리액트)
 
