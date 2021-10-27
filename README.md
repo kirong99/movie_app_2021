@@ -1,5 +1,355 @@
 # 최기룡 [201840231]
 
+## [10월 27일]
+### 오늘 배운 내용 요약(리액트)
+
+1. 영화 앱 전체 모습 수정하기
+  - App.css 코드 전체 삭제
+  - Movie 컴포넌트에 genres props 넘겨주기
+```javascript
+//Movie.js
+function Movie({ title, year, summary, poster , genres})
+'''' //중간 생략
+Movie.prorTypes= {
+''''
+poster: PropTypes.string.isRequired,
+genres: PropTypes.arrayOf(PropTypes.string).isRequired,
+};
+```
+```javascript
+//App.js
+<div class="movies">
+  //생략
+  <Movie
+    //생략
+    poster={movie.medium.cover_image}
+    genres={moive.genres}
+  />
+```
+  - 위 코드 수정
+  - class -> className으로 수정
+___
+
+2. 영화 장르 출력하기
+  - map함수를 사용하여 영화 장르 출력하기
+```javascript
+<h5 className="movie-year">
+<ul className="movie-genres">
+    {genres.map((genre)=> {
+    return <li className="movie-genre">{genre}</li>;
+    })}
+</ul>
+```
+  - 위 코드 추가
+  - **장르 출력 화면**
+![장르출력](./장르출력.PNG)
+
+___
+
+  - li 엘리먼트에 key props 출력하기
+```javascript
+<ul className="movie-genres">
+    {genres.map((genre, index)=> {
+    return <li key={index} className="movie-genre">
+    {genre}
+           </li>;
+    })}
+</ul>
+```
+- 위 코드 추가
+___
+
+3. 영화 앱 멋지게 스타일링하기
+  - App.css 파일 수정
+```css
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding : 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'SegoeUI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helventica Neue', sans-serif;
+    background-color: #eff3f7;
+    height: 100%;
+}
+```
+
+  - Movie.css 파일 수정
+```css
+.movies .movie{
+    background-color:white;
+    margin-bottom: 70px;
+    font-weight: 300;
+    padding: 20px;
+    border-radius:5px;
+    color: #adaeb9;
+    box-shadow: 0 13px 17px -5px rgba(50,50,93,0.25), 0 8px 16px -8px rgba(0,0,0,0.3), 0 -6px 16px -6px rgba(0,0,0,0.025);
+}
+
+.moives .movie a{
+    display: grid;
+    grid-template-columns: minmax(150px, 1fr) 2fr;
+    grid-gap: 20px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.movie img {
+    position: relative;
+    top : -50px;
+    max-width: 150px;
+    width: 100%;
+    margin-right: 30px;
+    box-shadow: 0 30px 60px -12px rgba(50,50,93,0.25), 0 18px 36px -18px rgba(0,0,0,0.3), 0 -12px 36px -8px rgba(0,0,0,0.025);
+}
+
+.movie .moive-title, .movie .movie-year{
+    margin: 0;
+    font-weight: 300;
+}
+
+.movie .movie-title{
+    margin-bottom: 5px;
+    font-size: 24px;
+    color: #2c2c2c;
+}
+
+.movie .movie-genres{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 5px 0px;
+}
+
+.movie-genres li, .movie .movie-year{
+    margin-right: 10px;
+    font-size: 14px;
+}
+```
+___
+  - 시놉시스 180자로 제한하기
+``` javascript
+//{summary} ->
+{summary.slice(0,180)}...</p>
+```
+___
+
+  - 영화 앱 제목 바꾸기
+```javascript
+//index.html
+<title>Movie App</title>//로 수정
+```
+
+4. react-router-dom 설치 후 프로젝트 폴더 정리
+  - react-router-dom 설치
+  >npm install react-router-dom 명령어 실행
+  - src 폴더 안에 components 폴더 생성 후 Movie.js, Movie.css 파일 이동
+  - src 폴더 안에 routes 폴더 생성 후 About.js, Home.js 파일 생성
+  - Home.js 수정하기(App.js를 복사해와서 수정)
+```javascript
+import React from 'react';
+import axios from 'axios';
+import Movie from '../components/Movie';
+import './Home.css';
+
+class Home extends React.Component {
+  //생략
+}
+
+export default Home;
+```
+___
+
+  - Home.css만들기(routes 폴더 안에)
+```css
+.container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.loader {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 300;
+}
+
+.movies {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(400px, 1fr));
+    grid-gap: 100px;
+    padding: 50px;
+    width: 80%;
+    padding-top: 70px;
+}
+
+@media screen and (max-width: 1090px) {
+    .movies {
+        grid-template-columns: 1fr;
+        width: 100%;
+    }
+}
+```
+___
+
+  - App.js 수정하고 앱 실행해보기
+```javascript
+import React from "react"
+import Home from "./routes/Home"
+import "./App.css"
+
+function App() {
+    return <Home />;
+}
+
+export default App
+```
+  - **결과화면**
+![home](./home.PNG)
+___
+  
+5. 라우터 만들어 보기
+  - HashRouter와 Route 컴포넌트 사용하기
+    - home을 임포트하는 코드는 잠시 지워두기
+```javascript
+//App.js
+import { HashRouter, Route } from 'react-router-dom'
+
+function App() {
+    return (
+        <HashRouter>
+            <Route />
+        </HashRouter>
+    );
+}
+```
+  - 화면에 아무것도 보이지 않고 주소창에 #이 추가된것이 정상
+___
+
+  - Route 컴포넌트에 path, component props 추가하기
+```javascript
+//App.js
+import About from './routes/About'
+function App() {
+    return (
+        <HashRouter>
+            <Route path="/about" component={About} />
+        </HashRouter>
+    );
+}
+```
+
+  - About.js 수정하기
+```javascript
+import React from 'react';
+
+function About() {
+    return <span> About this page: I built it because I love movies.</span>;
+}
+
+export default About;
+```
+  - 코드 수정 후 앱 주소창에 #뒤에 about을 추가한다면 내용이 보일 것.
+![route](./route.PNG)
+___
+
+  - Home 컴포넌트를 위한 Route 컴포넌트 추가
+```javascript
+//App.js
+import Home from './routes/Home'
+<HashRouter>
+            <Route path="/" component={Home} />
+```
+- 코드 수정 후 실행을 시키면 기본 화면은 Home이 실행이 될것이고 주소에 보면 about으로 접속이 되었기에 같이 맨 밑에 출력되는 것을 볼 수 있다.
+___
+
+  - 라우터 자세히 살펴보기
+```javascript
+//App.js
+function App() {
+    return (
+        <HashRouter>
+            <Route path="/home">
+                <h1>Home</h1>
+            </Route>
+            <Route path="/home/instroduction">
+                <h1>instroduction</h1>
+            </Route>
+            <Route path="/about">
+                <h1>About</h1>
+            </Route>
+        </HashRouter>
+    );
+}
+```
+  - 코드를 수정 후 실행한다면 주소가 **home**이라면 **home**이 출력, **home/instroduction**이라면 **home과 instroduction**이 출력, **about**은 **about**이 출력된다
+___
+
+  - App.js 원래대로 돌려놓기 -> 위에 코드 바로 전단계로 돌려놓기
+  - Route 컴포넌트에 exact propts 추가해보기
+```javascript
+//App.js
+<Route path="/" exact={true} component={Home} />
+```
+
+  - 위 코드 수정 -> 주소가 about이라면 about 컴포넌트만 출력되고 /인 경우에는 home 컴포넌트 출력
+___
+
+  - About.css 작성(routes 폴더에 About.css 생성)
+```css
+.about-container{
+    box-shadow: 0 13px 27px -5px rgba(50,50,93,0.25), 0 8px 16px -8px rgba(0,0,0,0.3), 0 -6px 16px -6px rgba(0,0,0,0.025);
+    padding: 20px;
+    border-radius: 5px;
+    background-color: white;
+    margin: 0 auto;
+    margin-top: 100px;
+    width: 100%;
+    max-width: 400px;
+    font-weight: 300;
+}
+
+.about-container span:first-child {
+    font-size: 20px;
+}
+
+.about-container span:last-child {
+    display: block;
+    margin-top: 10px;
+}
+```
+  - 이후 about.js 수정
+```javascript
+//About.js
+import React from 'react';
+import './About.css'
+
+function About() {
+    return(
+        <div className="about-container">
+            <span>
+                "Freedom is the freedom to say that two plus two make four. If that is granted, all else follows"
+            </span>
+            <span>- George Orwell, 1984</span>
+        </div>
+    );
+}
+
+export default About;
+
+```
+  - 코드를 실행하고 about을 주소에 입력하면 작성한 내용이 보일 것.
+___
+
+
+
+
 ## [10월 13일]
 ### 오늘 배운 내용 요약(리액트)
 
