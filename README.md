@@ -1,5 +1,209 @@
 # 최기룡 [201840231]
 
+## [11월 3일]
+### 오늘 배운 내용 요약(리액트)
+
+1. 네비게이션 만들기
+  - Navigation 컴포넌트 만들기
+    - components 폴더에 Navigation.js 파일 생성
+```javascript
+import React from 'react';
+
+function Navigation() {
+    return(
+        <div>
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+        </div>
+    )
+}
+
+export default Navigation;
+```
+___
+  - Navigation 컴포넌트 App 컴포넌트에 포함시키기
+```javascript
+//App.js
+import Navigation from "./components/Navigation"
+
+<HashRouter>
+     <Navigation />
+// ''' 생략           
+</HashRouter>
+```
+  - Home 링크가 왼쪽 상단에 만들어짐, 링크를 누르고 작동되는지 확인
+___
+  - a 엘리먼트를 Link 엘리먼트로 바꾸기
+```javascript
+//Navigation.js
+import { Link } from 'react-router-dom';
+
+function Navigation() {
+    return(
+        <div>
+            <Link to="/">Home</Link>
+            <Link to="/about">About</Link>
+        </div>
+    )
+}
+```
+  - link로 바꾼 뒤에 about도 잘 작동하는지 확인
+___
+  - Navigation.css 파일 생성 후 작성
+```css
+.nav{
+    z-index: 1;
+    position: fixed;
+    top: 50px;
+    left: 10px;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    padding: 10px 20px;
+    box-shadow: 0 13px 27px -5px rgba(50,50,93,0.25),
+     0 8px 16px -8px rgba(0,0,0,0.3),
+     0 -6px 16px -6px rgba(0,0,0,0.025);
+    border-radius: 5px;
+}
+
+@media screen and (max-width: 1090px) {
+    .nav{
+        left: initial;
+        top: initial;
+        bottom : 0px;
+        width: 100%;
+    }
+}   
+
+.nav a{
+    text-decoration: none;
+    color: #0008fc;
+    text-transform: uppercase;
+    font-size: 12px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.nav a:not(:last-child){
+    margin-bottom: 20px;
+}
+```
+  - Navigation.js에 임포트시키기
+  - div classname 명시
+```javascript
+import './Navigation.css';
+<div className="nav">
+```
+___
+
+2. 영화 상세 정보 기능 만들어보기
+  - route props 살펴보기
+    - console.log를 통해 about으로 어떤 props가 넘어오는지 체크.
+```javascript
+//About.js
+function About(props) {
+    console.log(props)
+```
+  - route props에 마음대로 데이터를 담아 보내줄 수 있다는 사실을 알게됨.
+___
+  - route props에 데이터 담아 보내기
+```javascript
+//Navigaion.js
+<Link to={{ pathname: '/about', state: { fromNavigation: true }}}>About</Link>
+```
+  - console창을 들어가서 location을 펼쳐보면 state에 값이 들어간 것을 확인할 수 있다.
+  - 확인했다면 다시 전 코드로 돌려놓기
+___
+  - Movie 컴포넌트에 Link 컴포넌트 추가하기
+```javascript
+//Movie.js
+import { Link } from 'react-router-dom';
+/// 중간 생략
+<div className="movie">
+  <Link
+    to={{
+    pathname: '/movie-detail',
+    state: {year, title, summary, poster, genres },
+       }}
+  >
+'''중간생략
+                </div>
+            </Link>
+        </div>
+```
+  - Link를 추가하고나서 영화 카드를 누르면 /movie-detail로 이동하는 것을 확인 가능
+___
+  - Detail 컴포넌트 만들기
+    - routes폴더에 Detail.js 만들기
+```javascript
+import React from 'react';
+
+function Detail(props) {
+    console.log(props);
+    return <span>hello</span>;
+}
+
+export default Detail;
+```
+___
+  - 만든 이후 App.js에 detail 컴포넌트를 임포트하고 route 컴포넌트에서 detail 컴포넌트를 그려주도록 수정
+```javascript
+//App.js
+import Detail from './routes/Detail';
+<Route path="/movie-detail" component={Detail}>
+```
+  - 이후 영화 카드를 눌러서 hello라는 문장이 보이고, console창에 가서
+  location에서 state를 movie 컴포넌트에서 link 컴포넌트를 보내준 데이터가 들어있다.
+___
+
+3. 리다이렉트 기능 만들어 보기
+  - 아무 영화 카드로 이동해서 console 탭을 열어보면 history에 출력된 값인 push,go,goBack,goForward키 -> URL 변경 함수
+  - Detail 컴포넌트 클래스형 컴포넌트로 변경하기
+```javascript
+import React from 'react';
+
+class Detail extends React.Component{
+    componentDidMount() {
+        const {location, history} = this.props;
+        if (location.stat === undefined) {
+            history.push('/');
+        }
+    }
+
+    render() {
+        return <span>hello</span>;
+    }
+}
+
+export default Detail;
+```
+  - 수정 후 앱을 실행하여 /movie-detail로 이동하면 Home으로 돌아오는 것을 확인 가능
+___
+  - 영화 제목 출력하기
+```javascript
+//Detail.js
+render() {
+  const { location } = this.props;
+  return <span>{location.state.title}</span>
+}
+```
+___
+  - 다시 /movie-detail로 돌아가면 오류 발생 -> render함수에도 리다이렉트 코드를 추가해야함
+```javascript
+//Detail.js
+render() {
+  const { location } = this.props;
+  if (location.state) {
+    return<span>{location.state.title}</span>;
+  } else {
+    return null;
+  }
+}
+```
+  - location.state가 없으면 render()함수가 null을 반환하도록 수정한 것.
+  -> 이로써 문제없이 실행가능.
+![최종완성](./최종완성.PNG)
+
 ## [10월 27일]
 ### 오늘 배운 내용 요약(리액트)
 
