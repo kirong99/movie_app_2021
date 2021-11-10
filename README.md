@@ -1,5 +1,54 @@
 # 최기룡 [201840231]
 
+## [11월 10일]
+### 오늘 배운 내용 요약(리액트)
+
+1. 영화 앱 배포하기
+  - package.json 수정하기
+```javascript
+//package.json
+"scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    //추가
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  },
+  // 중간 생략
+"development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  //추가
+  "homepage": "https://kirong99.github.io/movie_app_2021"
+```
+___
+  - 이후 npm install gh-pages 설치
+  - 배포 명령어 : npm run deploy **(한 번 배포하고 난 뒤에도 다시 명령어를 실행한다면 재배포 가능)**
+  - 배포 이후 bulid 폴더가 생긴 것 확인 가능 -> 안쪽 index.html을 통해 어디에서도 실행할 수 있음 -> 
+    **index.html 안에 있는 css,js 파일의 경로 앞부분을 ./static으로 수정해주어야 한다.**
+
+2. React의 특징
+  - 상호작용이 많은 UI 개발에 적합하다.
+  - 컴포넌트 로직은 JavaScript로 작성한다.
+  - 캡슐화된 컴포넌트로 개발되어 재사용이 용이하다.
+  - DOM과는 별개로 상태를 관리할 수 있다.
+  - 기술 스택의 나머지 부분에는 관여하지 않는다.
+  - 기존 코드와 별개로 개발이 가능하다.
+  - React Native을 이용하면 모바일 앱도 만들 수 있다.
+
+3. CDN & LINK
+  - CDN : Content Delivery Network 또는 Content Distribution Network
+  - CORS : 특정 헤더를 통해서 브라우저에게 원 출처에서 실행되고 있는 웹 애플리케이션이 다른 출처에 원하는 리소스에 접근할 수 있는 권한이 있는지 알려주는 매커니즘
+  - Babel: 이전 저번과 호환되는 JavaScript 버전으로 변환하는 데 주로 사용되는 무료 오픈 소스 JavaScript 트랜스 컴파일러
+
+4. 컴포넌트
+  - React component에서 render() 메소드를 사용하는 예제
+  - render() 메소드는 데이터를 입력받아 화면에 반환하는 역할을 한다.
+  - 컴포넌트로 전달된 데이터는 render() 안에서 this.props를 통해 접근 가능
+
 ## [11월 3일]
 ### 오늘 배운 내용 요약(리액트)
 
