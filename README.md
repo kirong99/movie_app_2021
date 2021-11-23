@@ -1,5 +1,82 @@
 # 최기룡 [201840231]
 
+## [11월 17일]
+### 오늘 배운 내용 요약(리액트)
+
+1. Todo List 만들기
+
+  - TodoApp과 TodoList 두개의 컴포넌트로 구성
+  - handleChange는 모든 키보드 입력마다 React의 state를 갱신해서 보여준다.
+  - 유저입력 > handleChange > React의 state 갱신 > form element가 React state를 참조
+  - render()메소드에서 초기 렌더링을 실행
+  - 입력된 값은 state의 "text:"에 임시로 저장된다.
+  - lavel의 htmlFor은 input과의 연결을 위한 id값
+  - 버튼을 클릭하면 버튼의 숫자를 증가
+  - 리스트는 배열로 저장되기 때문에 item.length를 통해 list의 수 확인
+  - input area에 이벤트가 발생하면 handleChange(e)가 동작하여 state의 text값을 변경한다.
+  - "Add #x"버튼을 클릭하면 리스트의 item.length에 1을 더해서 버튼 출력
+  ___
+
+  2. key props의 역할
+  - key는 props의 안정적으로 사용할 수 있도록 고유성을 부여하기 위해 필요
+  - React가 어떤 props를 변경, 추가 또는 삭제할지 식별하는 것을 도와준다.
+  - 유일한 값이라면 그 값이 무엇이든 상관없다.
+  ___
+
+  3. Remarkable 사용하기(markdown editor)
+  - create-react-app으로 markdown-editor 프로젝트 생성
+  - App.js에 있는 필요없는 코드 삭제
+  - App.js에 문서의 코드를 복사해 넣는다.
+  - component의 이름을 App으로 수정
+  - rendering은 index.js에 위임
+  - Remarkable을 설치
+  - React와 Remarkable을 import
+
+```javascript
+import React from "react"
+import { Remarkable } from 'remarkable';
+
+  class App extends React.Component {
+    constructor(props) {
+      super(props);
+      this.md = new Remarkable();
+      this.handleChange = this.handleChange.bind(this);
+      this.state = { value: 'Hello, **world**!' };
+    }
+  
+    handleChange(e) {
+      this.setState({ value: e.target.value });
+    }
+  
+    getRawMarkup() {
+      return { __html: this.md.render(this.state.value) };
+    }
+  
+    render() {
+      return (
+        <div className="MarkdownEditor">
+          <h3>Input</h3>
+          <label htmlFor="markdown-content">
+            Enter some markdown
+          </label>
+          <textarea
+            id="markdown-content"
+            onChange={this.handleChange}
+            defaultValue={this.state.value}
+          />
+          <h3>Output</h3>
+          <div
+            className="content"
+            dangerouslySetInnerHTML={this.getRawMarkup()}
+          />
+        </div>
+      );
+    }
+  }
+
+export default App;
+```
+
 ## [11월 10일]
 ### 오늘 배운 내용 요약(리액트)
 
