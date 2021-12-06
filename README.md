@@ -1,5 +1,283 @@
 # 최기룡 [201840231]
 
+## [12월 1일]
+### 오늘 배운 내용 요약(리액트)
+
+1. 함수에서 클래스로 변환하기
+  1. React.Component를 확장하는 동일한 이름의 ES6 class를 생성
+  2. render()라고 불리는 빈 메서드 추가
+  3. 함수의 내용을 render() 메서드 안으로 옮김
+  4. render() 내용 안에 있는 props를 this.props로 변경
+  5. 남아있는 빈 함수 선언 삭제
+
+```javascript
+class Clock extends React.Component {
+  render() {
+    return (
+      <div>
+        <h1>Hello, world!</h1>
+        <h2>It is {this.props.date.toLocaleTimeString()}.</h2>
+      </div>
+    );
+  }
+}
+```
+___
+  - Clock은 함수가 아닌 클래스로 정의
+  - 로컬 state와 생명주기 메서드와 같은 부가적인 기능 사용
+
+2. 클래스에 로컬 state 추가
+  1. render() 메서드 안에 있는 this.props.date를 this.state.date로 변경
+  2. this.state를 지정하는 class constructor 추가
+  >클래스 컴포넌트는 항상 props로 기본 constructor 호출
+  3. <Clock />요소에서 date prop 삭제
+```javascript
+class Clock extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {date: new Date()};
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>Hello, world!</h1>
+        <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(
+  <Clock />,
+  document.getElementById('root')
+);
+```
+
+3. 생명주기 메서드 클래스 추가
+  - Clock이 처음 DOM에 렌더링 될 때마다 타이머 설정
+  - Clock에 의해 생성된 DOM이 삭제될 때마다 타이머 해제 --> 언마운팅
+  - componentDidMount() 메서드는 컴포넌트 출력물이 DOM에 렌더링 된 후에 실행
+  - this (this.timerID) 에서 어떻게 타이머 ID를 제대로 저장하는지 주의
+  ```javascript
+  class Clock extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {date: new Date()};
+  }
+
+  componentDidMount() {
+    this.timerID = setInterval(
+      () => this.tick(),
+      1000
+    );
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
+  tick() {
+    this.setState({
+      date: new Date()
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>Hello, world!</h1>
+        <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(
+  <Clock />,
+  document.getElementById('root')
+);
+```
+___
+
+4. State 올바르게 사용하기
+  - 직접 State 수정하지 말기
+  - State 업데이트는 비동기적일 수 있다.
+  - State 업데이트는 병합 된다.
+
+___
+5. 이벤트 처리하기
+  - React의 이벤트는 소문자 대신 캐멀 케이스를 사용한다
+  - JSX를 사용하여 문자열이 아닌 함수로 이벤트 핸들러 전달
+  - React에서는 false를 반환해도 기본 동작 방지 x, 반드시 preventDefault를 명시적으로 호출해야 한다.
+  ```javascript
+  class Toggle extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {isToggleOn: true};
+
+    // 콜백에서 `this`가 작동하려면 아래와 같이 바인딩 해주어야 합니다.
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+    this.setState(prevState => ({
+      isToggleOn: !prevState.isToggleOn
+    }));
+  }
+
+  render() {
+    return (
+      <button onClick={this.handleClick}>
+        {this.state.isToggleOn ? 'ON' : 'OFF'}
+      </button>
+    );
+  }
+}
+
+ReactDOM.render(
+  <Toggle />,
+  document.getElementById('root')
+);
+```
+___
+
+6. 조건부 렌더링
+  - 현재 상태에 맞게 <LoginButton />이나 <LogoutButton />을 렌더링하는 코드
+```javascript
+class LoginControl extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleLoginClick = this.handleLoginClick.bind(this);
+    this.handleLogoutClick = this.handleLogoutClick.bind(this);
+    this.state = {isLoggedIn: false};
+  }
+
+  handleLoginClick() {
+    this.setState({isLoggedIn: true});
+  }
+
+  handleLogoutClick() {
+    this.setState({isLoggedIn: false});
+  }
+
+  render() {
+    const isLoggedIn = this.state.isLoggedIn;
+    let button;
+    if (isLoggedIn) {
+      button = <LogoutButton onClick={this.handleLogoutClick} />;
+    } else {
+      button = <LoginButton onClick={this.handleLoginClick} />;
+    }
+
+    return (
+      <div>
+        <Greeting isLoggedIn={isLoggedIn} />
+        {button}
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(
+  <LoginControl />,
+  document.getElementById('root')
+);
+```
+___
+
+7. 논리 &&연산자로 IF를 인라인으로 표현하기
+  - Javascript의 논리 연산자 &&를 사용하면 쉽게 엘리먼트를 조건부로 넣을 수 있다.
+```javascript
+function Mailbox(props) {
+  const unreadMessages = props.unreadMessages;
+  return (
+    <div>
+      <h1>Hello!</h1>
+      {unreadMessages.length > 0 &&
+        <h2>
+          You have {unreadMessages.length} unread messages.
+        </h2>
+      }
+    </div>
+  );
+}
+
+const messages = ['React', 'Re: React', 'Re:Re: React'];
+ReactDOM.render(
+  <Mailbox unreadMessages={messages} />,
+  document.getElementById('root')
+);
+```
+- && 뒤에 엘리먼트는 조건이 true 일때 출력이 되고, false라면 무시하고 건너뛴다.
+___
+8. 조건부 여난자로 If - Else 구문 인라인으로 표현하기
+  - 엘리먼트를 조건부로 렌더링하는 다른 방법은 조건부 연산자인 condition ? true : false를 사용하는 것
+```javascript
+render() {
+  const isLoggedIn = this.state.isLoggedIn;
+  return (
+    <div>
+      {isLoggedIn
+        ? <LogoutButton onClick={this.handleLogoutClick} />
+        : <LoginButton onClick={this.handleLoginClick} />
+      }
+    </div>
+  );
+}
+```
+___
+9. 컴포넌트가 렌더링하는 것을 막기
+  - 다른 컴포넌트에 의해 렌더링될 때 컴포넌트 자체를 숨기고 싶을 때가 있을 수 있다.
+  - 렌더링 결과를 출력하는 대신 null을 반환하면 해결 가능
+  - 컴포넌트의 render메서드로부터 null을 반환하는 것은 생명주기 메서드 호출에 영향을 주지 않음.
+```javascript
+function WarningBanner(props) {
+  if (!props.warn) {
+    return null;
+  }
+
+  return (
+    <div className="warning">
+      Warning!
+    </div>
+  );
+}
+
+class Page extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {showWarning: true};
+    this.handleToggleClick = this.handleToggleClick.bind(this);
+  }
+
+  handleToggleClick() {
+    this.setState(state => ({
+      showWarning: !state.showWarning
+    }));
+  }
+
+  render() {
+    return (
+      <div>
+        <WarningBanner warn={this.state.showWarning} />
+        <button onClick={this.handleToggleClick}>
+          {this.state.showWarning ? 'Hide' : 'Show'}
+        </button>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(
+  <Page />,
+  document.getElementById('root')
+);
+```
+___
+
+- 더 자세한 내용 **https://ko.reactjs.org/docs/state-and-lifecycle.html**
+
 ## [11월 17일]
 ### 오늘 배운 내용 요약(리액트)
 
